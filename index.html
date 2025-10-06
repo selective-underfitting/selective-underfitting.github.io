@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Selective Underfitting in Diffusion Models</title>
+  <meta name="description" content="Project page for the paper 'Selective Underfitting in Diffusion Models'."/>
+  <meta property="og:title" content="Selective Underfitting in Diffusion Models"/>
+  <meta property="og:description" content="Project page for the paper 'Selective Underfitting in Diffusion Models'."/>
+  <meta property="og:type" content="website"/>
+  <style>
+    :root {
+      --bg: #0b0c10;
+      --panel: #0f1117;
+      --muted: #9aa4b2;
+      --text: #e6eaf2;
+      --brand: #7c81ff;
+      --accent: #00d1b2;
+      --border: #1a1f2e;
+      --shadow: 0 10px 30px rgba(0,0,0,.35);
+      --radius: 18px;
+      --code: #0a0d14;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font: 16px/1.7 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
+    a { color: var(--brand); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .wrap { max-width: 1080px; margin: 0 auto; padding: 24px; }
+    header.hero { border: 1px solid var(--border); background: radial-gradient(1200px 800px at 20% -10%, rgba(124,129,255,.15), transparent 50%), var(--panel); border-radius: var(--radius); padding: 40px 28px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+    header.hero h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 48px); letter-spacing: -0.02em; }
+    header.hero p.subtitle { margin: 6px 0 18px; color: var(--muted); font-size: clamp(16px, 2.1vw, 20px); }
+    .authors { display:flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
+    .authors a, .authors span { color: var(--text); opacity: .9; }
+    .tags { margin-top: 18px; display:flex; gap: 10px; flex-wrap: wrap; }
+    .tag { background: #101522; color: #c9d4f4; border: 1px solid var(--border); padding: 6px 10px; border-radius: 999px; font-size: 13px; }
+    .cta { margin-top: 22px; display:flex; gap: 12px; flex-wrap: wrap; }
+    .btn { display:inline-flex; align-items:center; gap:10px; padding: 12px 16px; border-radius: 12px; background: #1a2135; color: #e9edfb; border: 1px solid var(--border); font-weight: 600; }
+    .btn.primary { background: linear-gradient(135deg, var(--brand), #a186ff); color: #0a0b10; border: none; }
+    .btn:hover { filter: brightness(1.05); text-decoration: none; }
+
+    main { margin-top: 26px; display: grid; gap: 24px; }
+    section.card { border: 1px solid var(--border); background: var(--panel); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow); }
+    section.card h2 { margin-top: 0; font-size: 22px; letter-spacing: -.01em; }
+    .grid { display:grid; gap: 18px; }
+    @media (min-width: 900px) { .grid.two { grid-template-columns: 1.2fr .8fr; } }
+
+    .kicker { color: var(--accent); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
+    .muted { color: var(--muted); }
+    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
+
+    .callout { border: 1px dashed #28314a; background: #0e1321; padding: 14px 16px; border-radius: 12px; }
+
+    pre, code { background: var(--code); color: #d4e4ff; border-radius: 12px; }
+    pre { padding: 18px; overflow-x:auto; border: 1px solid var(--border); }
+    code { padding: 2px 6px; }
+
+    footer { margin: 26px 0 40px; color: var(--muted); text-align: center; }
+  </style>
+  <link rel="canonical" href="https://selective-underfitting.github.io/"/>
+</head>
+<body>
+  <div class="wrap">
+    <header class="hero">
+      <div class="kicker">Project</div>
+      <h1>Selective Underfitting in Diffusion Models</h1>
+      <p class="subtitle">Understanding where diffusion models fit the score well—and where they intentionally underfit—to explain generalization and guide better generators.</p>
+      <div class="authors">
+        <span>Kiwhan Song</span><span>·</span>
+        <span>Jaeyeon Kim</span><span>·</span>
+        <span>Sitan Chen</span><span>·</span>
+        <span>Yilun Du</span><span>·</span>
+        <span>Sham Kakade</span><span>·</span>
+        <span>Vincent Sitzmann</span>
+      </div>
+      <div class="tags">
+        <span class="tag">Machine Learning</span>
+        <span class="tag">Diffusion Models</span>
+        <span class="tag">Score Matching</span>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="https://arxiv.org/abs/2510.01378" target="_blank" rel="noopener">Read the paper</a>
+        <a class="btn" href="#bibtex">Cite</a>
+        <a class="btn" href="#abstract">Abstract</a>
+        <a class="btn" href="#updates">Updates</a>
+      </div>
+    </header>
+
+    <main>
+      <section id="abstract" class="card">
+        <h2>Abstract</h2>
+        <p>
+          Diffusion models learn a score function for generation, but a key question remains: <em>which</em> score do they actually learn in practice? A model that exactly matches the empirical score everywhere would simply memorize data. We argue instead for <strong>selective underfitting</strong>: strong models more faithfully approximate the score in some regions of input space while underfitting others. We characterize these regions and validate the perspective with targeted interventions, yielding new, testable insights into generalization and generative performance.
+        </p>
+        <div class="callout muted">
+          This is a concise summary for the website; please refer to the paper for full details.
+        </div>
+      </section>
+
+      <section id="links" class="card grid two">
+        <div>
+          <h2>Resources</h2>
+          <ul>
+            <li>Paper: <a href="https://arxiv.org/abs/2510.01378" target="_blank" rel="noopener">arXiv:2510.01378</a></li>
+            <li>DOI: <a href="https://doi.org/10.48550/arXiv.2510.01378" target="_blank" rel="noopener">10.48550/arXiv.2510.01378</a></li>
+            <li>Code: <span class="muted">coming soon</span></li>
+          </ul>
+          <p class="muted">If you use this work, please cite it (see below).</p>
+        </div>
+        <div>
+          <h2>At a glance</h2>
+          <ul>
+            <li>Topic: diffusion models, score estimation</li>
+            <li>Key idea: learn to underfit <em>selectively</em> where it helps generalization</li>
+            <li>Authors: Song, Kim, Chen, Du, Kakade, Sitzmann</li>
+            <li>Venue: preprint (2025)</li>
+          </ul>
+        </div>
+      </section>
+
+      <section id="updates" class="card">
+        <h2>Announcement</h2>
+        <p>
+          We introduced the paper in a short post here:
+          <a href="https://typefully.com/t/xCWbsZ1" target="_blank" rel="noopener">Announcement thread</a>.
+        </p>
+        <div class="callout">
+          <strong>Note:</strong> If you'd like to embed the post, replace the link above with an X embed block.
+        </div>
+        <details class="muted" style="margin-top:12px">
+          <summary>How to embed an X post</summary>
+          <pre><code>&lt;blockquote class="twitter-tweet"&gt;
+  &lt;a href="https://twitter.com/.../status/123"&gt;&lt;/a&gt;
+&lt;/blockquote&gt;
+&lt;script async src="https://platform.twitter.com/widgets.js"&gt;&lt;/script&gt;</code></pre>
+        </details>
+      </section>
+
+      <section id="bibtex" class="card">
+        <h2>BibTeX</h2>
+        <pre><code class="mono">@article{song2025selective,
+  title   = {Selective Underfitting in Diffusion Models},
+  author  = {Song, Kiwhan and Kim, Jaeyeon and Chen, Sitan and Du, Yilun and Kakade, Sham and Sitzmann, Vincent},
+  journal = {arXiv preprint arXiv:2510.01378},
+  year    = {2025},
+  eprint  = {2510.01378},
+  archivePrefix = {arXiv},
+  primaryClass  = {cs.LG}
+}
+</code></pre>
+      </section>
+
+      <section id="faq" class="card">
+        <h2>FAQ</h2>
+        <details>
+          <summary>Why “selective” underfitting?</summary>
+          <p>Exact score-matching everywhere would reproduce training data. By underfitting in targeted regions while fitting others, models can generalize better and generate novel, high-quality samples.</p>
+        </details>
+        <details>
+          <summary>How is this different from prior “underfitting” explanations?</summary>
+          <p>Prior work posits broad underfitting due to inductive biases. We refine this by describing where accurate score learning happens and where underfitting is beneficial, with concrete empirical tests.</p>
+        </details>
+      </section>
+    </main>
+
+    <footer>
+      © 2025 • Selective Underfitting in Diffusion Models
+    </footer>
+  </div>
+</body>
+</html>
