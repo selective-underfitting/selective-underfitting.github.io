@@ -1,170 +1,259 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE html>
+<html>
 <head>
-  <meta charset="utf-8"/>
-  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta charset="utf-8">
+  <meta name="description" content="Selective Underfitting: a new lens to understand how diffusion models generalize, when they underfit, and why popular training recipes like DiT/REPA work.">
+  <meta name="keywords" content="diffusion models, selective underfitting, score matching, REPA, DiT">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Selective Underfitting in Diffusion Models</title>
-  <meta name="description" content="Project page for the paper 'Selective Underfitting in Diffusion Models'."/>
-  <meta property="og:title" content="Selective Underfitting in Diffusion Models"/>
-  <meta property="og:description" content="Project page for the paper 'Selective Underfitting in Diffusion Models'."/>
-  <meta property="og:type" content="website"/>
-  <style>
-    :root {
-      --bg: #0b0c10;
-      --panel: #0f1117;
-      --muted: #9aa4b2;
-      --text: #e6eaf2;
-      --brand: #7c81ff;
-      --accent: #00d1b2;
-      --border: #1a1f2e;
-      --shadow: 0 10px 30px rgba(0,0,0,.35);
-      --radius: 18px;
-      --code: #0a0d14;
-    }
-    * { box-sizing: border-box; }
-    html, body { margin:0; padding:0; background:var(--bg); color:var(--text); font: 16px/1.7 Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Noto Sans, Ubuntu, Cantarell, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
-    a { color: var(--brand); text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    .wrap { max-width: 1080px; margin: 0 auto; padding: 24px; }
-    header.hero { border: 1px solid var(--border); background: radial-gradient(1200px 800px at 20% -10%, rgba(124,129,255,.15), transparent 50%), var(--panel); border-radius: var(--radius); padding: 40px 28px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
-    header.hero h1 { margin: 0 0 10px; font-size: clamp(28px, 4vw, 48px); letter-spacing: -0.02em; }
-    header.hero p.subtitle { margin: 6px 0 18px; color: var(--muted); font-size: clamp(16px, 2.1vw, 20px); }
-    .authors { display:flex; flex-wrap: wrap; gap: 10px 14px; align-items: center; }
-    .authors a, .authors span { color: var(--text); opacity: .9; }
-    .tags { margin-top: 18px; display:flex; gap: 10px; flex-wrap: wrap; }
-    .tag { background: #101522; color: #c9d4f4; border: 1px solid var(--border); padding: 6px 10px; border-radius: 999px; font-size: 13px; }
-    .cta { margin-top: 22px; display:flex; gap: 12px; flex-wrap: wrap; }
-    .btn { display:inline-flex; align-items:center; gap:10px; padding: 12px 16px; border-radius: 12px; background: #1a2135; color: #e9edfb; border: 1px solid var(--border); font-weight: 600; }
-    .btn.primary { background: linear-gradient(135deg, var(--brand), #a186ff); color: #0a0b10; border: none; }
-    .btn:hover { filter: brightness(1.05); text-decoration: none; }
-
-    main { margin-top: 26px; display: grid; gap: 24px; }
-    section.card { border: 1px solid var(--border); background: var(--panel); border-radius: var(--radius); padding: 26px; box-shadow: var(--shadow); }
-    section.card h2 { margin-top: 0; font-size: 22px; letter-spacing: -.01em; }
-    .grid { display:grid; gap: 18px; }
-    @media (min-width: 900px) { .grid.two { grid-template-columns: 1.2fr .8fr; } }
-
-    .kicker { color: var(--accent); font-weight: 700; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; }
-    .muted { color: var(--muted); }
-    .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; }
-
-    .callout { border: 1px dashed #28314a; background: #0e1321; padding: 14px 16px; border-radius: 12px; }
-
-    pre, code { background: var(--code); color: #d4e4ff; border-radius: 12px; }
-    pre { padding: 18px; overflow-x:auto; border: 1px solid var(--border); }
-    code { padding: 2px 6px; }
-
-    footer { margin: 26px 0 40px; color: var(--muted); text-align: center; }
-  </style>
   <link rel="canonical" href="https://selective-underfitting.github.io/"/>
+
+  <!-- MathJax for LaTeX rendering (optional) -->
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script>
+    window.MathJax = { tex: { inlineMath: [['$', '$'], ['\(', '\)']], displayMath: [['$$','$$'], ['\[','\]']] } };
+  </script>
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+  <!-- (Optional) Analytics – fill in your ID or remove -->
+  <script>
+    // window.dataLayer = window.dataLayer || [];
+    // function gtag(){dataLayer.push(arguments);} gtag('js', new Date());
+    // gtag('config', 'G-XXXXXXXXXX');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro" rel="stylesheet">
+
+  <!-- Bulma / Icons / Local styles (match FlexMDM structure) -->
+  <link rel="stylesheet" href="./static/css/bulma.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+  <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+  <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+  <link rel="stylesheet" href="./static/css/index.css">
+  <link rel="icon" href="./static/images/favicon.svg">
+
+  <style>
+    /* Minimal extras if ./static/css/index.css is empty */
+    .publication-title { letter-spacing: -0.02em; }
+    .hero.is-primary { background: linear-gradient(180deg,#0f1221,#14182c); }
+    .teaser img { border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,.25); }
+    .fancy-table { width: 100%; border-collapse: collapse; }
+    .fancy-table th,.fancy-table td{ border:1px solid #e6e6e6; padding:8px 10px; }
+    .fancy-table th{ background:#f6f7fb; }
+    .section .subtitle strong{ font-weight:700; }
+    .tagline { color:#6b7280; margin-top:.25rem; }
+  </style>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script defer src="./static/js/fontawesome.all.min.js"></script>
+  <script src="./static/js/bulma-carousel.min.js"></script>
+  <script src="./static/js/bulma-slider.min.js"></script>
+  <script src="./static/js/index.js"></script>
 </head>
 <body>
-  <div class="wrap">
-    <header class="hero">
-      <div class="kicker">Project</div>
-      <h1>Selective Underfitting in Diffusion Models</h1>
-      <p class="subtitle">Understanding where diffusion models fit the score well—and where they intentionally underfit—to explain generalization and guide better generators.</p>
-      <div class="authors">
-        <span>Kiwhan Song</span><span>·</span>
-        <span>Jaeyeon Kim</span><span>·</span>
-        <span>Sitan Chen</span><span>·</span>
-        <span>Yilun Du</span><span>·</span>
-        <span>Sham Kakade</span><span>·</span>
-        <span>Vincent Sitzmann</span>
-      </div>
-      <div class="tags">
-        <span class="tag">Machine Learning</span>
-        <span class="tag">Diffusion Models</span>
-        <span class="tag">Score Matching</span>
-      </div>
-      <div class="cta">
-        <a class="btn primary" href="https://arxiv.org/abs/2510.01378" target="_blank" rel="noopener">Read the paper</a>
-        <a class="btn" href="#bibtex">Cite</a>
-        <a class="btn" href="#abstract">Abstract</a>
-        <a class="btn" href="#updates">Updates</a>
-      </div>
-    </header>
 
-    <main>
-      <section id="abstract" class="card">
-        <h2>Abstract</h2>
-        <p>
-          Diffusion models learn a score function for generation, but a key question remains: <em>which</em> score do they actually learn in practice? A model that exactly matches the empirical score everywhere would simply memorize data. We argue instead for <strong>selective underfitting</strong>: strong models more faithfully approximate the score in some regions of input space while underfitting others. We characterize these regions and validate the perspective with targeted interventions, yielding new, testable insights into generalization and generative performance.
-        </p>
-        <div class="callout muted">
-          This is a concise summary for the website; please refer to the paper for full details.
+<!-- HERO -->
+<section class="hero is-white">
+  <div class="hero-body">
+    <div class="container is-max-desktop">
+      <div class="columns is-centered">
+        <div class="column has-text-centered">
+          <h1 class="title is-1 publication-title">Selective Underfitting in Diffusion Models</h1>
+          <p class="tagline">A new rule-of-thumb for how diffusion models learn, generalize, and scale.</p>
+
+          <div class="is-size-5 publication-authors" style="margin-top:10px">
+            <span class="author-block">Kiwhan Song<sup>*</sup>,</span>
+            <span class="author-block">Jaeyeon Kim<sup>*</sup>,</span>
+            <span class="author-block"><a href="https://sitanchen.com" target="_blank">Sitan Chen</a>,</span>
+            <span class="author-block"><a href="https://yilundu.github.io" target="_blank">Yilun Du</a>,</span>
+            <span class="author-block"><a href="https://shamulent.github.io" target="_blank">Sham Kakade</a>,</span>
+            <span class="author-block"><a href="https://vsitzmann.github.io/" target="_blank">Vincent Sitzmann</a></span>
+          </div>
+          <div class="is-size-6 publication-authors">
+            <span class="author-block"><sup>*</sup>co-led</span>
+          </div>
+
+          <div class="column has-text-centered">
+            <div class="publication-links">
+              <span class="link-block">
+                <a href="https://arxiv.org/abs/2510.01378" class="external-link button is-normal is-rounded is-dark" target="_blank" rel="noopener">
+                  <span class="icon"><i class="fas fa-file-pdf"></i></span>
+                  <span>Paper</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="https://typefully.com/t/xCWbsZ1" class="external-link button is-normal is-rounded is-light" target="_blank" rel="noopener">
+                  <span class="icon"><i class="fab fa-x-twitter"></i></span>
+                  <span>Thread</span>
+                </a>
+              </span>
+              <span class="link-block">
+                <a href="#" class="external-link button is-normal is-rounded is-light is-static" aria-disabled="true">
+                  <span class="icon"><i class="fab fa-github"></i></span>
+                  <span>Code (soon)</span>
+                </a>
+              </span>
+            </div>
+          </div>
+
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section id="links" class="card grid two">
-        <div>
-          <h2>Resources</h2>
+<!-- TEASER IMAGE -->
+<section class="hero teaser">
+  <div class="container is-max-desktop">
+    <div class="hero-body">
+      <img id="teaser" src="./static/images/dummy.jpg" style="width: 100%; height: auto;" alt="Teaser image placeholder"/>
+      <h2 class="subtitle has-text-centered" style="margin-top:14px">
+        <span class="has-text-weight-semibold">Selective Underfitting</span> explains how diffusion models generalize beyond the training set and why common recipes (DiT/REPA) scale well.
+      </h2>
+    </div>
+  </div>
+</section>
+
+<!-- INTRO / SUMMARY FROM THREAD -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <div class="columns is-centered has-text-centered">
+      <div class="column is-four-fifths">
+        <h2 class="title is-3">Introduction</h2>
+        <div class="content has-text-justified">
+          <p>
+            Diffusion models are trained to approximate the <em>empirical score</em> of finite training data. If they fit it perfectly everywhere, sampling would simply reproduce training examples. Prior work attributes generalization to broad, global underfitting from inductive bias. Our finding: underfitting is <strong>selective</strong>.
+          </p>
+          <p>
+            Stronger models <em>fit</em> the score well in one region and intentionally <em>underfit</em> outside it. We call these the <strong>supervision region</strong> (where noisy training samples concentrate) and the <strong>extrapolation region</strong> (where the model is actually queried during inference). Error shrinks in the former and grows in the latter.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- REGIONS SECTION -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Supervision vs. Extrapolation</h2>
+    <div class="columns is-vcentered">
+      <div class="column is-half">
+        <img src="./static/images/dummy.jpg" alt="Regions illustration placeholder"/>
+        <p class="has-text-grey is-size-7">Dummy figure – replace with your plot of blue shells (supervision) vs. red region (extrapolation).</p>
+      </div>
+      <div class="column is-half">
+        <div class="content">
           <ul>
-            <li>Paper: <a href="https://arxiv.org/abs/2510.01378" target="_blank" rel="noopener">arXiv:2510.01378</a></li>
-            <li>DOI: <a href="https://doi.org/10.48550/arXiv.2510.01378" target="_blank" rel="noopener">10.48550/arXiv.2510.01378</a></li>
-            <li>Code: <span class="muted">coming soon</span></li>
+            <li><strong>Supervision region</strong>: high-probability shells around noisy training samples ("blue shells").</li>
+            <li><strong>Extrapolation region</strong>: states most frequently visited by the sampler at inference ("red region").</li>
+            <li>When sampling from supervision, learned ≈ empirical scores → models can reproduce training images.</li>
           </ul>
-          <p class="muted">If you use this work, please cite it (see below).</p>
         </div>
-        <div>
-          <h2>At a glance</h2>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ERROR CURVES -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Selective Underfitting Curves</h2>
+    <div class="columns is-vcentered">
+      <div class="column is-half">
+        <img src="./static/images/dummy.jpg" alt="Error curves placeholder"/>
+        <p class="has-text-grey is-size-7">Dummy figure – blue: supervision error ↓ with scale; red: extrapolation error ↑.</p>
+      </div>
+      <div class="column is-half">
+        <div class="content">
+          We observe decreasing error between learned and empirical scores within supervision, but increasing error in extrapolation as models scale. This provides direct, quantitative evidence for <em>selective</em> rather than global underfitting.
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- GENERALIZATION / SCALING -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Generalization & Scaling</h2>
+    <div class="content">
+      <ul>
+        <li><strong>Generalization depends on region sizes</strong>: enlarging supervision region degrades generalization, independent of architecture (SiT, U-Net).</li>
+        <li><strong>FID decomposition</strong>: via a scaling law, we split FID into (i) supervision loss (fit to empirical score) and (ii) <em>extrapolation efficiency</em> (how effectively a given supervision loss turns into FID gains).</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- WHY RECIPES WORK -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Why do DiT and REPA work?</h2>
+    <div class="columns is-vcentered">
+      <div class="column is-half">
+        <img src="./static/images/dummy.jpg" alt="FID decomposition placeholder"/>
+        <p class="has-text-grey is-size-7">Dummy figure – swap with your FID decomposition plot.</p>
+      </div>
+      <div class="column is-half">
+        <div class="content">
           <ul>
-            <li>Topic: diffusion models, score estimation</li>
-            <li>Key idea: learn to underfit <em>selectively</em> where it helps generalization</li>
-            <li>Authors: Song, Kim, Chen, Du, Kakade, Sitzmann</li>
-            <li>Venue: preprint (2025)</li>
+            <li><strong>REPA</strong> mainly boosts <em>extrapolation efficiency</em> with minimal change in supervision loss.</li>
+            <li><strong>Transformers (DiT)</strong> trail U-Nets in extrapolation efficiency but excel in FLOPs→supervision loss, yielding better compute efficiency (FLOPs→FID).</li>
+            <li>Methods like <em>RePA</em> and <em>ReDi</em> align score outputs with learned representations, improving behavior in underfitting regions.</li>
           </ul>
         </div>
-      </section>
+      </div>
+    </div>
+  </div>
+</section>
 
-      <section id="updates" class="card">
-        <h2>Announcement</h2>
-        <p>
-          We introduced the paper in a short post here:
-          <a href="https://typefully.com/t/xCWbsZ1" target="_blank" rel="noopener">Announcement thread</a>.
-        </p>
-        <div class="callout">
-          <strong>Note:</strong> If you'd like to embed the post, replace the link above with an X embed block.
-        </div>
-        <details class="muted" style="margin-top:12px">
-          <summary>How to embed an X post</summary>
-          <pre><code>&lt;blockquote class="twitter-tweet"&gt;
-  &lt;a href="https://twitter.com/.../status/123"&gt;&lt;/a&gt;
-&lt;/blockquote&gt;
-&lt;script async src="https://platform.twitter.com/widgets.js"&gt;&lt;/script&gt;</code></pre>
-        </details>
-      </section>
+<!-- TAKEAWAYS -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Takeaways</h2>
+    <div class="content">
+      <ol>
+        <li>Diffusion models do not underfit everywhere; they underfit <strong>selectively</strong> in distinct regions.</li>
+        <li>The relative sizes of supervision/extrapolation regions control generalization.</li>
+        <li>Decomposing FID into supervision vs. extrapolation efficiency explains why recipes like REPA and DiT/SiT work.</li>
+      </ol>
+    </div>
+  </div>
+</section>
 
-      <section id="bibtex" class="card">
-        <h2>BibTeX</h2>
-        <pre><code class="mono">@article{song2025selective,
+<!-- BIBTEX -->
+<section class="section" id="BibTeX">
+  <div class="container is-max-desktop content">
+    <h2 class="title">BibTeX</h2>
+<pre><code>@article{song2025selective,
   title   = {Selective Underfitting in Diffusion Models},
   author  = {Song, Kiwhan and Kim, Jaeyeon and Chen, Sitan and Du, Yilun and Kakade, Sham and Sitzmann, Vincent},
   journal = {arXiv preprint arXiv:2510.01378},
-  year    = {2025},
-  eprint  = {2510.01378},
-  archivePrefix = {arXiv},
-  primaryClass  = {cs.LG}
-}
-</code></pre>
-      </section>
-
-      <section id="faq" class="card">
-        <h2>FAQ</h2>
-        <details>
-          <summary>Why “selective” underfitting?</summary>
-          <p>Exact score-matching everywhere would reproduce training data. By underfitting in targeted regions while fitting others, models can generalize better and generate novel, high-quality samples.</p>
-        </details>
-        <details>
-          <summary>How is this different from prior “underfitting” explanations?</summary>
-          <p>Prior work posits broad underfitting due to inductive biases. We refine this by describing where accurate score learning happens and where underfitting is beneficial, with concrete empirical tests.</p>
-        </details>
-      </section>
-    </main>
-
-    <footer>
-      © 2025 • Selective Underfitting in Diffusion Models
-    </footer>
+  year    = {2025}
+}</code></pre>
   </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="footer">
+  <div class="container">
+    <div class="content has-text-centered">
+      <a class="icon-link" href="#" class="external-link" aria-disabled="true">
+        <i class="fab fa-github"></i>
+      </a>
+    </div>
+    <div class="columns is-centered">
+      <div class="column is-8">
+        <div class="content">
+          <p>This website is licensed under a <a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/">Creative Commons Attribution-ShareAlike 4.0 International License</a>.</p>
+          <p>This webpage is adapted from <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a> and the FlexMDM site template.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</footer>
+
 </body>
 </html>
