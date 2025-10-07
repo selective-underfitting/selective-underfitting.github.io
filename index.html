@@ -60,18 +60,20 @@
       <div class="columns is-centered">
         <div class="column has-text-centered">
           <h1 class="title is-1 publication-title">Selective Underfitting in Diffusion Models</h1>
-          <p class="tagline">A new rule-of-thumb for how diffusion models learn, generalize, and scale.</p>
+          <p class="tagline">A new rule of understandig diffusion models for how diffusion models learn, generalize, and scale.</p>
 
           <div class="is-size-5 publication-authors" style="margin-top:10px">
-            <span class="author-block">Kiwhan Song<sup>*</sup>,</span>
-            <span class="author-block">Jaeyeon Kim<sup>*</sup>,</span>
-            <span class="author-block"><a href="https://sitanchen.com" target="_blank">Sitan Chen</a>,</span>
-            <span class="author-block"><a href="https://yilundu.github.io" target="_blank">Yilun Du</a>,</span>
-            <span class="author-block"><a href="https://shamulent.github.io" target="_blank">Sham Kakade</a>,</span>
-            <span class="author-block"><a href="https://vsitzmann.github.io/" target="_blank">Vincent Sitzmann</a></span>
+            <span class="author-block">Kiwhan Song<sup>*</sup><sup>1</sup>,</span>
+            <span class="author-block">Jaeyeon Kim<sup>*</sup><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://sitanchen.com" target="_blank">Sitan Chen</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://yilundu.github.io" target="_blank">Yilun Du</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://shamulent.github.io" target="_blank">Sham Kakade</a><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://vsitzmann.github.io/" target="_blank">Vincent Sitzmann</a><sup>2</sup></span>
           </div>
           <div class="is-size-6 publication-authors">
-            <span class="author-block"><sup>*</sup>co-led</span>
+            <span class="author-block"><sup>*</sup>equal contribution</span>
+            <span class="author-block"><sup>1</sup>Harvard</span>
+            <span class="author-block"><sup>2</sup>MIT</span>
           </div>
 
           <div class="column has-text-centered">
@@ -88,29 +90,11 @@
                   <span>Thread</span>
                 </a>
               </span>
-              <span class="link-block">
-                <a href="#" class="external-link button is-normal is-rounded is-light is-static" aria-disabled="true">
-                  <span class="icon"><i class="fab fa-github"></i></span>
-                  <span>Code (soon)</span>
-                </a>
-              </span>
             </div>
           </div>
 
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
-<!-- TEASER IMAGE -->
-<section class="hero teaser">
-  <div class="container is-max-desktop">
-    <div class="hero-body">
-      <img id="teaser" src="./static/images/dummy.jpg" style="width: 100%; height: auto;" alt="Teaser image placeholder"/>
-      <h2 class="subtitle has-text-centered" style="margin-top:14px">
-        <span class="has-text-weight-semibold">Selective Underfitting</span> explains how diffusion models generalize beyond the training set and why common recipes (DiT/REPA) scale well.
-      </h2>
     </div>
   </div>
 </section>
@@ -123,10 +107,10 @@
         <h2 class="title is-3">Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            Diffusion models are trained to approximate the <em>empirical score</em> of finite training data. If they fit it perfectly everywhere, sampling would simply reproduce training examples. Prior work attributes generalization to broad, global underfitting from inductive bias. Our finding: underfitting is <strong>selective</strong>.
+            Diffusion models have emerged as the principal paradigm for generative modeling across various domains. During training, they learn the score function, which in turn is used to generate samples at inference. Despite their success, they face an apparent paradox: : if training were perfect, themodel would learn the empirical score function–the score with respect to the finite training data–and simply replicate the training data at inference, never generating novel samples.
           </p>
           <p>
-            Stronger models <em>fit</em> the score well in one region and intentionally <em>underfit</em> outside it. We call these the <strong>supervision region</strong> (where noisy training samples concentrate) and the <strong>extrapolation region</strong> (where the model is actually queried during inference). Error shrinks in the former and grows in the latter.
+            Recent work has sought to resolve this paradox by proposing various mechanisms by which diffusion models underfit the empirical score, due to inductive bias or smoothness of neural networks (Kamb & Ganguli, 2024; Niedoba et al., 2024b; Scarvelis et al., 2023; Pidstrigach, 2022; Yoon et al., 2023; Yi et al., 2023). In this work, we argue that understanding diffusion models requires us to investigate not just how they underfit the empirical score, but where they underfit. We show that the diffusion model actually does not underfit in a certain region of the space and selectively underfits beyond it. This further provides novel lens of explaning diffusion model's behavior.
           </p>
         </div>
       </div>
