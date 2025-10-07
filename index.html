@@ -106,10 +106,10 @@
       <div class="column is-four-fifths">
         <h2 class="title is-3">Introduction</h2>
         <div class="content has-text-justified">
-          <p>
+          <p class="no-mathjax">
             Diffusion models have emerged as the principal paradigm for generative modeling across various domains. During training, they learn the score function, which in turn is used to generate samples at inference. Despite their success, they face an apparent paradox: if training were perfect, they would learn the empirical score function–the score with respect to the finite training data–and simply replicate the training data at inference, never generating novel samples.
           </p>
-          <p>
+          <p class="no-mathjax">
             Recent work has sought to resolve this paradox by arguing that diffusion models “globally” underfit the empirical score and suggest that inductive bias or smoothness of neural networks are the reason for this, including (Kamb &amp; Ganguli 2024; Niedoba et al. 2024; Scarvelis et al. 2023; Pidstrigach 2022; Yoon et al. 2023; Yi et al. 2023). Instead, we argue that understanding diffusion models requires us to investigate not just how they underfit the empirical score, but where they underfit. We show that diffusion models do not underfit in a certain region of the space and selectively underfit beyond it. This provides a novel lens for explaining diffusion models’ behavior.
           </p>
         </div>
@@ -124,15 +124,15 @@
     <h2 class="title is-3">Selective Underfitting</h2>
     <div class="content">
       <ul>
-        <p>
+        <p class="no-mathjax">
           We first distinguish two regions of the space: <strong>supervision region</strong> and <strong>extrapolation region</strong>. Error between the learned score and the empirical score decreases in the supervision region (X underfitting, blue line) but increases in the extrapolation region (O underfitting, red line) as models improve with better FID scores. These two regions can be further characterized as follows:        
         </p>
-        <ul>
+        <ul class="no-mathjax">
           <li><strong>Supervision region</strong>: where the noisy training samples concentrated with a high probability. A model is supervised to learn the empirical score in this region (blue shells).</li>
           <li><strong>Extrapolation region</strong>: where the model is actually queried during inference. A model is not supervised to learn the empirical score in this region (red region).</li>
           <li>In supervision region, the learned and empirical scores are <strong>sufficiently close</strong> that the model reproduces the training images when sampling starts from there.</li> 
         </ul>
-        <p>
+        <p class="no-mathjax">
           Therefore, we claim that the right way to understand diffusion models is to think of them as operating by <strong>(1)</strong> approximating the empirical score within the supervision region and <strong>(2)</strong> extrapolating it to the extrapolation region, which is ultimately used at inference time.
         </p>
       </ul>
@@ -145,8 +145,8 @@
   <div class="container is-max-desktop">
     <h2 class="title is-3">Generalization</h2>
     <div class="content">
-      <ul>
-        <li><strong>Generalization depends on region sizes</strong>: enlarging supervision region degrades generalization, independent of architecture (SiT, U-Net).</li>
+      <ul class="no-mathjax">
+        <li><strong>This perspective is crucial for understanding diffusion model generalization: the size of the supervision region strongly affects a model's ability to generalize. Enlarging this region degrades generalization—a trend that persists regardless of architecture (e.g., SiT, U-Net).</li>
         <li><strong>FID decomposition</strong>: via a scaling law, we split FID into (i) supervision loss (fit to empirical score) and (ii) <em>extrapolation efficiency</em> (how effectively a given supervision loss turns into FID gains).</li>
       </ul>
     </div>
