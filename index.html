@@ -63,8 +63,8 @@
           <p class="tagline">A new rule of understandig diffusion models for how diffusion models learn, generalize, and scale.</p>
 
           <div class="is-size-5 publication-authors" style="margin-top:10px">
-            <span class="author-block">Kiwhan Song<sup>*</sup><sup>1</sup>,</span>
-            <span class="author-block">Jaeyeon Kim<sup>*</sup><sup>2</sup>,</span>
+            <span class="author-block"><a href="https://kiwhan.dev/" target="_blank">Kiwhan Song<sup>*</sup><sup>1</sup>,</span>
+            <span class="author-block"><a href="https://jaeyeonkim01.github.io/" target="_blank">Jaeyeon Kim<sup>*</sup><sup>2</sup>,</span>
             <span class="author-block"><a href="https://sitanchen.com" target="_blank">Sitan Chen</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://yilundu.github.io" target="_blank">Yilun Du</a><sup>1</sup>,</span>
             <span class="author-block"><a href="https://shamulent.github.io" target="_blank">Sham Kakade</a><sup>1</sup>,</span>
@@ -107,10 +107,10 @@
         <h2 class="title is-3">Introduction</h2>
         <div class="content has-text-justified">
           <p>
-            Diffusion models have emerged as the principal paradigm for generative modeling across various domains. During training, they learn the score function, which in turn is used to generate samples at inference. Despite their success, they face an apparent paradox: : if training were perfect, themodel would learn the empirical score function–the score with respect to the finite training data–and simply replicate the training data at inference, never generating novel samples.
+            Diffusion models have emerged as the principal paradigm for generative modeling across various domains. During training, they learn the score function, which in turn is used to generate samples at inference. Despite their success, they face an apparent paradox: if training were perfect, they would learn the empirical score function–the score with respect to the finite training data–and simply replicate the training data at inference, never generating novel samples.
           </p>
           <p>
-            Recent work has sought to resolve this paradox by proposing various mechanisms by which diffusion models underfit the empirical score, due to inductive bias or smoothness of neural networks (Kamb & Ganguli, 2024; Niedoba et al., 2024b; Scarvelis et al., 2023; Pidstrigach, 2022; Yoon et al., 2023; Yi et al., 2023). In this work, we argue that understanding diffusion models requires us to investigate not just how they underfit the empirical score, but where they underfit. We show that the diffusion model actually does not underfit in a certain region of the space and selectively underfits beyond it. This further provides novel lens of explaning diffusion model's behavior.
+            Recent work has sought to resolve this paradox by arguing that diffusion model `globally' underfits the empirical score and suggest that inductive bias or smoothness of neural networks are the reason for this, including Kamb & Ganguli (2024); Niedoba et al. (2024b); Scarvelis et al. (2023); Pidstrigach (2022); Yoon et al. (2023); Yi et al. (2023). Instead, we argue that understanding diffusion models requires us to investigate not just how they underfit the empirical score, but where they underfit. We show that the diffusion model actually does not underfit in a certain region of the space and selectively underfits beyond it. This further provides novel lens of explaning diffusion model's behavior.
           </p>
         </div>
       </div>
@@ -121,7 +121,7 @@
 <!-- REGIONS SECTION -->
 <section class="section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3">Supervision vs. Extrapolation</h2>
+    <h2 class="title is-3">Selective Underfitting</h2>
     <div class="columns is-vcentered">
       <div class="column is-half">
         <img src="./static/images/dummy.jpg" alt="Regions illustration placeholder"/>
@@ -130,6 +130,9 @@
       <div class="column is-half">
         <div class="content">
           <ul>
+            <p>
+              We first distinguish two regions of the space: <strong>supervision region</strong> and <strong>extrapolation region</strong>. Error between the learned score and the empirical score decreases in the supervision region (X underfitting, blue line) but increases in the extrapolation region (O underfitting, red line) as models improve with better FID scores. These two regions can be further characterized as follows:        
+            </p>
             <li><strong>Supervision region</strong>: high-probability shells around noisy training samples ("blue shells").</li>
             <li><strong>Extrapolation region</strong>: states most frequently visited by the sampler at inference ("red region").</li>
             <li>When sampling from supervision, learned ≈ empirical scores → models can reproduce training images.</li>
