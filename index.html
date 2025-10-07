@@ -110,7 +110,7 @@
             Diffusion models have emerged as the principal paradigm for generative modeling across various domains. During training, they learn the score function, which in turn is used to generate samples at inference. Despite their success, they face an apparent paradox: if training were perfect, they would learn the empirical score function–the score with respect to the finite training data–and simply replicate the training data at inference, never generating novel samples.
           </p>
           <p>
-            Recent work has sought to resolve this paradox by arguing that diffusion model `globally' underfits the empirical score and suggest that inductive bias or smoothness of neural networks are the reason for this, including Kamb & Ganguli (2024); Niedoba et al. (2024b); Scarvelis et al. (2023); Pidstrigach (2022); Yoon et al. (2023); Yi et al. (2023). Instead, we argue that understanding diffusion models requires us to investigate not just how they underfit the empirical score, but where they underfit. We show that the diffusion model actually does not underfit in a certain region of the space and selectively underfits beyond it. This further provides novel lens of explaning diffusion model's behavior.
+            Recent work has sought to resolve this paradox by arguing that diffusion model 'globally' underfits the empirical score and suggest that inductive bias or smoothness of neural networks are the reason for this, including '(Kamb & Ganguli 2024)'; '(Niedoba et al. 2024)'; '(Scarvelis et al. 2023)'; '(Pidstrigach 2022)'; '(Yoon et al. 2023)'; '(Yi et al. 2023)'. Instead, we argue that understanding diffusion models requires us to investigate not just how they underfit the empirical score, but where they underfit. We show that the diffusion model actually does not underfit in a certain region of the space and selectively underfits beyond it. This further provides novel lens of explaning diffusion model's behavior.
           </p>
         </div>
       </div>
@@ -133,8 +133,8 @@
             <p>
               We first distinguish two regions of the space: <strong>supervision region</strong> and <strong>extrapolation region</strong>. Error between the learned score and the empirical score decreases in the supervision region (X underfitting, blue line) but increases in the extrapolation region (O underfitting, red line) as models improve with better FID scores. These two regions can be further characterized as follows:        
             </p>
-            <li><strong>Supervision region</strong>: high-probability shells around noisy training samples ("blue shells").</li>
-            <li><strong>Extrapolation region</strong>: states most frequently visited by the sampler at inference ("red region").</li>
+            <li><strong>Supervision region</strong>: where the noisy training samples concentrated with a high probability. A model is supervised to learn the empirical score in this region (blue shells).</li>
+            <li><strong>Extrapolation region</strong>: where the model is actually queried during inference. A model is not supervised to learn the empirical score in this region (red region).</li>
             <li>When sampling from supervision, learned ≈ empirical scores → models can reproduce training images.</li>
           </ul>
         </div>
