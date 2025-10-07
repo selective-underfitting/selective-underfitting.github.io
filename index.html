@@ -162,15 +162,9 @@
         <ul class="no-mathjax">
           <li> How well it approximates the empirical score in the supervision region. This translates to the training loss.</li>
           <li> How this approximation translates to generative performance (training loss → FID), i.e., extrapolation efficiency.
+        This provides a quantative and comprehensive lens to understand why recent diffusion training recipes work well.
       </p>
     </div>
-  </div>
-</section>
-
-<!-- WHY RECIPES WORK -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3">Why do DiT and REPA work?</h2>
     <div class="columns is-vcentered">
       <div class="column is-half">
         <img src="./static/images/dummy.jpg" alt="FID decomposition placeholder"/>
@@ -185,7 +179,6 @@
           </ul>
         </div>
       </div>
-    </div>
   </div>
 </section>
 
@@ -195,9 +188,9 @@
     <h2 class="title is-3">Takeaways</h2>
     <div class="content">
       <ol>
-        <li>Diffusion models don’t underfit everywhere, but selectively in distinct regions of data space.</li>
-        <li>The relative sizes of these regions affect generalization.</li>
-        <li>Decomposing FID into this interaction reveals why recipes like RePA and DiT/SiT work well.</li>
+        <li><strong>Diffusion models don’t underfit everywhere, but selectively in distinct regions of data space.</strong></li>
+        <li><strong>The relative sizes of these regions affect generalization.</strong></li>
+        <li><strong>Decomposing FID into this interaction reveals why recipes like RePA and DiT/SiT work well.</strong></li>
       </ol>
       <p>
         Last but not least, our lens of selective underfitting opens the door to new questions: how is the score shaped in underfitting regions, and can we design training recipes that better balance supervision and extrapolation?
