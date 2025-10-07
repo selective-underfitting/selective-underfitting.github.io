@@ -122,23 +122,30 @@
 <section class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3">Selective Underfitting</h2>
-    <div class="columns is-vcentered">
-      <div class="column is-half">
-        <img src="./static/images/dummy.jpg" alt="Regions illustration placeholder"/>
-        <p class="has-text-grey is-size-7">Dummy figure – replace with your plot of blue shells (supervision) vs. red region (extrapolation).</p>
-      </div>
-      <div class="column is-half">
-        <div class="content">
-          <ul>
-            <p>
-              We first distinguish two regions of the space: <strong>supervision region</strong> and <strong>extrapolation region</strong>. Error between the learned score and the empirical score decreases in the supervision region (X underfitting, blue line) but increases in the extrapolation region (O underfitting, red line) as models improve with better FID scores. These two regions can be further characterized as follows:        
-            </p>
-            <li><strong>Supervision region</strong>: where the noisy training samples concentrated with a high probability. A model is supervised to learn the empirical score in this region (blue shells).</li>
-            <li><strong>Extrapolation region</strong>: where the model is actually queried during inference. A model is not supervised to learn the empirical score in this region (red region).</li>
-            <li>When sampling from supervision, learned ≈ empirical scores → models can reproduce training images.</li>
-          </ul>
-        </div>
-      </div>
+    <div class="content">
+      <ul>
+        <p>
+          We first distinguish two regions of the space: <strong>supervision region</strong> and <strong>extrapolation region</strong>. Error between the learned score and the empirical score decreases in the supervision region (X underfitting, blue line) but increases in the extrapolation region (O underfitting, red line) as models improve with better FID scores. These two regions can be further characterized as follows:        
+        </p>
+        <ul>
+          <li><strong>Supervision region</strong>: where the noisy training samples concentrated with a high probability. A model is supervised to learn the empirical score in this region (blue shells).</li>
+          <li><strong>Extrapolation region</strong>: where the model is actually queried during inference. A model is not supervised to learn the empirical score in this region (red region).</li>
+          <li>In supervision region, the learned and empirical scores are sufficiently close that the model reproduces the training images when sampling starts from there.</li> 
+        </ul>
+      </ul>
+    </div>
+  </div>
+</section>
+
+
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Generalization & Scaling</h2>
+    <div class="content">
+      <ul>
+        <li><strong>Generalization depends on region sizes</strong>: enlarging supervision region degrades generalization, independent of architecture (SiT, U-Net).</li>
+        <li><strong>FID decomposition</strong>: via a scaling law, we split FID into (i) supervision loss (fit to empirical score) and (ii) <em>extrapolation efficiency</em> (how effectively a given supervision loss turns into FID gains).</li>
+      </ul>
     </div>
   </div>
 </section>
