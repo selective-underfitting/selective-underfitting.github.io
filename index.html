@@ -118,7 +118,7 @@
   </div>
 </section>
 
-<!-- REGIONS SECTION -->
+<!-- SELECTIVE UNDERFITTING SECTION -->
 <section class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3">Selective Underfitting</h2>
@@ -140,46 +140,30 @@
   </div>
 </section>
 
-
+<!-- GENERALIZATION SECTION -->
 <section class="section">
   <div class="container is-max-desktop">
     <h2 class="title is-3">Generalization</h2>
     <div class="content">
       <ul class="no-mathjax">
-        <li><strong>This perspective is crucial for understanding diffusion model generalization: the size of the supervision region strongly affects a model's ability to generalize. Enlarging this region degrades generalization—a trend that persists regardless of architecture (e.g., SiT, U-Net).</li>
-        <li><strong>FID decomposition</strong>: via a scaling law, we split FID into (i) supervision loss (fit to empirical score) and (ii) <em>extrapolation efficiency</em> (how effectively a given supervision loss turns into FID gains).</li>
+        <li><strong>This perspective is crucial for understanding diffusion model generalization: the size of the supervision region strongly affects a model's ability to generalize. Enlarging this region degrades generalization—a trend that persists regardless of architecture, e.g., SiT, U-Net.</li>
+        <li>This behavior cannot be explained by previous works, which focus on how inductive bias shapes underfitting of the empirical score. Our perspective adds a complementary dimension: to fully understand diffusion model generalization, one must consider where the model underfits, not only how.</li>
       </ul>
     </div>
   </div>
 </section>
 
-<!-- ERROR CURVES -->
+<!-- SCALING LAW -->
 <section class="section">
   <div class="container is-max-desktop">
-    <h2 class="title is-3">Selective Underfitting Curves</h2>
-    <div class="columns is-vcentered">
-      <div class="column is-half">
-        <img src="./static/images/dummy.jpg" alt="Error curves placeholder"/>
-        <p class="has-text-grey is-size-7">Dummy figure – blue: supervision error ↓ with scale; red: extrapolation error ↑.</p>
-      </div>
-      <div class="column is-half">
-        <div class="content">
-          We observe decreasing error between learned and empirical scores within supervision, but increasing error in extrapolation as models scale. This provides direct, quantitative evidence for <em>selective</em> rather than global underfitting.
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- GENERALIZATION / SCALING -->
-<section class="section">
-  <div class="container is-max-desktop">
-    <h2 class="title is-3">Generalization & Scaling</h2>
+    <h2 class="title is-3">Scaling Law</h2>
     <div class="content">
-      <ul>
-        <li><strong>Generalization depends on region sizes</strong>: enlarging supervision region degrades generalization, independent of architecture (SiT, U-Net).</li>
-        <li><strong>FID decomposition</strong>: via a scaling law, we split FID into (i) supervision loss (fit to empirical score) and (ii) <em>extrapolation efficiency</em> (how effectively a given supervision loss turns into FID gains).</li>
-      </ul>
+      <p>
+        Next, we decompose a model's FID into two components:
+        <ul class="no-mathjax">
+          <li> How well it approximates the empirical score in the supervision region. This translates to the training loss.</li>
+          <li> How this approximation translates to generative performance (training loss → FID), i.e., extrapolation efficiency.
+      </p>
     </div>
   </div>
 </section>
@@ -195,10 +179,10 @@
       </div>
       <div class="column is-half">
         <div class="content">
-          <ul>
-            <li><strong>REPA</strong> mainly boosts <em>extrapolation efficiency</em> with minimal change in supervision loss.</li>
-            <li><strong>Transformers (DiT)</strong> trail U-Nets in extrapolation efficiency but excel in FLOPs→supervision loss, yielding better compute efficiency (FLOPs→FID).</li>
-            <li>Methods like <em>RePA</em> and <em>ReDi</em> align score outputs with learned representations, improving behavior in underfitting regions.</li>
+          <ul class="no-mathjax">
+            <li><strong>RePA</strong> barely alters the model’s behavior in the supervision region but greatly changes its extrapolation behavior—endowing it with better extrapolation efficiency.</li>
+            <li><strong>Transformers (DiT)</strong> trail U-Nets in extrapolation efficiency but excel in FLOPs→supervision loss. Combining both factors, transformers achieve higher overall compute efficiency (FLOPs → FIDs).</li>
+            <li>We further argue that recent diffusion training methods, such as <strong>RePA</strong> and <strong>ReDi</strong>, align the score network’s output with the learned representation, improving generative performance by better handling underfitting (extrapolation) regions.</li>
           </ul>
         </div>
       </div>
@@ -212,13 +196,27 @@
     <h2 class="title is-3">Takeaways</h2>
     <div class="content">
       <ol>
-        <li>Diffusion models do not underfit everywhere; they underfit <strong>selectively</strong> in distinct regions.</li>
-        <li>The relative sizes of supervision/extrapolation regions control generalization.</li>
-        <li>Decomposing FID into supervision vs. extrapolation efficiency explains why recipes like REPA and DiT/SiT work.</li>
+        <li>Diffusion models don’t underfit everywhere, but selectively in distinct regions of data space.</li>
+        <li>The relative sizes of these regions affect generalization.</li>
+        <li>Decomposing FID into this interaction reveals why recipes like RePA and DiT/SiT work well.</li>
       </ol>
     </div>
   </div>
 </section>
+
+
+<!-- OUTLOOK -->
+<section class="section">
+  <div class="container is-max-desktop">
+    <h2 class="title is-3">Outlook</h2>
+    <div class="content">
+      <p>
+        Our lens of selective underfitting opens the door to new questions: how is the score shaped in underfitting regions, and can we design training recipes that better balance supervision and extrapolation?
+      </p>
+    </div>
+  </div>
+</section>
+
 
 <!-- BIBTEX -->
 <section class="section" id="BibTeX">
